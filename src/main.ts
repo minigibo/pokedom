@@ -7,6 +7,9 @@ const cardContainer = document.querySelector(".card-container");
 const nameFilterInput = document.getElementById(
   "nameFilter"
 ) as HTMLInputElement;
+const numberFilterInput = document.getElementById(
+  "numberFilter"
+) as HTMLInputElement;
 
 if (!cardContainer) {
   throw new Error("Issue with query selector");
@@ -33,18 +36,42 @@ const renderPokemonCard = (pokemon: Pokemon) => {
 
 pokemonArray.forEach((pokemon) => renderPokemonCard(pokemon));
 
-// filtering by name
-const nameFilteredCards = (filteredPokemon: Pokemon[]) => {
+// filtering cards
+const filteredCards = (filteredPokemon: Pokemon[]) => {
   cardContainer.innerHTML = "";
   filteredPokemon.forEach((pokemon) => renderPokemonCard(pokemon));
 };
 
+// filtering by name
 if (nameFilterInput) {
   nameFilterInput.addEventListener("input", () => {
     const search = nameFilterInput.value.toLowerCase();
     const filteredPokemon = pokemonArray.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(search)
     );
-    nameFilteredCards(filteredPokemon);
+    filteredCards(filteredPokemon);
+  });
+}
+
+// filtering by number of cards
+const getRandomPokemonArray = (numberOfCards: number): Pokemon[] => {
+  const randomPokemonArray: Pokemon[] = [];
+  for (let i = 0; i < numberOfCards; i++) {
+    const randomIndex = Math.floor(Math.random() * pokemonArray.length);
+    const randomPokemon = pokemonArray[randomIndex];
+    randomPokemonArray.push(randomPokemon);
+  }
+  return randomPokemonArray;
+};
+
+if (numberFilterInput) {
+  numberFilterInput.addEventListener("input", () => {
+    const numberOfCards = parseInt(numberFilterInput.value);
+    if (numberOfCards) {
+      const randomPokemonArray = getRandomPokemonArray(numberOfCards);
+      filteredCards(randomPokemonArray);
+    } else {
+      filteredCards(pokemonArray);
+    }
   });
 }
